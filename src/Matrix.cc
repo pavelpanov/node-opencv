@@ -2628,7 +2628,6 @@ NAN_METHOD(Matrix::MorphologyEx) {
 
 NAN_METHOD(Matrix::Mul) {
   Nan::HandleScope scope;
-
   Matrix *self = Nan::ObjectWrap::Unwrap<Matrix>(info.This());
   double scale = info[1]->NumberValue();
 
@@ -2636,7 +2635,8 @@ NAN_METHOD(Matrix::Mul) {
     Matrix *kernelMatrix = Nan::ObjectWrap::Unwrap<Matrix>(info[0]->ToObject());
     kernel = kernelMatrix->mat;
 
-  self->mat = self->mat.mul(kernel, scale);
-
-//  info.GetReturnValue().Set(mat);
+  cv::Mat mat = self->mat.mul(kernel, scale);
+  ~self->mat;
+  self->mat = mat;
+  return;
 }
