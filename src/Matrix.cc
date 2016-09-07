@@ -2636,7 +2636,7 @@ NAN_METHOD(Matrix::Mul) {
     Matrix *kernelMatrix = Nan::ObjectWrap::Unwrap<Matrix>(info[0]->ToObject());
     kernel = kernelMatrix->mat;
 
-  cv::Mat mat = self->mat.mul(kernel, scale);
+  self->mat = self->mat.mul(kernel, scale);
 
-  info.GetReturnValue().Set(mat);
+//  info.GetReturnValue().Set(mat);
 }
