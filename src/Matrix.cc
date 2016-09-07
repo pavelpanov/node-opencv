@@ -111,7 +111,8 @@ void Matrix::Init(Local<Object> target) {
   Nan::SetPrototypeMethod(ctor, "reshape", Reshape);
   Nan::SetPrototypeMethod(ctor, "release", Release);
   Nan::SetPrototypeMethod(ctor, "subtract", Subtract);
-
+  Nan::SetPrototypeMethod(ctor, "morphologyEx", MorphologyEx);
+  Nan::SetPrototypeMethod(ctor, "mul", Mul);
   target->Set(Nan::New("Matrix").ToLocalChecked(), ctor->GetFunction());
 };
 
@@ -2604,4 +2605,38 @@ NAN_METHOD(Matrix::Subtract) {
   self->mat -= other->mat;
 
   return;
+}
+
+
+NAN_METHOD(Matrix::MorphologyEx) {
+  Nan::HandleScope scope;
+
+  Matrix *self = Nan::ObjectWrap::Unwrap<Matrix>(info.This());
+  int operation = info[0]->NumberValue();
+  int niters = info[1]->NumberValue();
+  
+  cv::Mat kernel = cv::Mat();
+  if (info.Length() == 3) {
+    Matrix *kernelMatrix = Nan::ObjectWrap::Unwrap<Matrix>(info[2]->ToObject());
+    kernel = kernelMatrix->mat;
+  }
+
+  cv::morphologyEx(self->mat, self->mat, operation, kernel, cv::Point(-1, -1), niters);
+
+  info.GetReturnValue().Set(Nan::Null());
+}
+
+NAN_METHOD(Matrix::Mul) {
+  Nan::HandleScope scope;
+
+  Matrix *self = Nan::ObjectWrap::Unwrap<Matrix>(info.This());
+  double scale = info[1]->NumberValue();
+
+  cv::Mat kernel = cv::Mat();
+    Matrix *kernelMatrix = Nan::ObjectWrap::Unwrap<Matrix>(info[0]->ToObject());
+    kernel = kernelMatrix->mat;
+
+  cv::Mat mat = self->mat.mul(kernel, scale);
+
+  info.GetReturnValue().Set(mat);
 }

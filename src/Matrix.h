@@ -128,6 +128,9 @@ public:
   JSFUNC(Release)
 
   JSFUNC(Subtract)
+
+  JSFUNC(MorphologyEx)
+  JSFUNC(Mul)
   /*
    static Handle<Value> Val(const Arguments& info);
    static Handle<Value> RowRange(const Arguments& info);
