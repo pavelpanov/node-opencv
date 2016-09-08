@@ -2632,11 +2632,14 @@ NAN_METHOD(Matrix::Mul) {
   double scale = info[1]->NumberValue();
 
   cv::Mat kernel = cv::Mat();
-    Matrix *kernelMatrix = Nan::ObjectWrap::Unwrap<Matrix>(info[0]->ToObject());
-    kernel = kernelMatrix->mat;
+  Matrix *kernelMatrix = Nan::ObjectWrap::Unwrap<Matrix>(info[0]->ToObject());
+  kernel = kernelMatrix->mat;
 
-  cv::Mat mat = self->mat.mul(kernel, scale);
-  ~self->mat;
-  self->mat = mat;
-  return;
+
+  Local<Object> xfrm = Nan::New(Matrix::constructor)->GetFunction()->NewInstance();
+  Matrix *xfrmmat = Nan::ObjectWrap::Unwrap<Matrix>(xfrm);
+  xfrmmat->mat = self->mat.mul(kernel, scale);
+
+  info.GetReturnValue().Set(xfrm);
+
 }
