@@ -18,6 +18,7 @@ void Contour::Init(Local<Object> target) {
   // Prototype
   // Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
   Nan::SetPrototypeMethod(ctor, "point", Point);
+  Nan::SetPrototypeMethod(ctor, "setPoint", SetPoint);
   Nan::SetPrototypeMethod(ctor, "points", Points);
   Nan::SetPrototypeMethod(ctor, "size", Size);
   Nan::SetPrototypeMethod(ctor, "cornerCount", CornerCount);
@@ -68,6 +69,17 @@ NAN_METHOD(Contour::Point) {
   data->Set(Nan::New("y").ToLocalChecked(), Nan::New<Number>(point.y));
 
   info.GetReturnValue().Set(data);
+}
+
+NAN_METHOD(Contour::SetPoint) {
+ Nan::HandleScope scope;
+ Contour *self = Nan::ObjectWrap::Unwrap<Contour>(info.This());
+ int pos = info[0]->NumberValue();
+ int index = info[1]->NumberValue();
+ int x = info[2]->NumberValue();
+ int y = info[3]->NumberValue();
+ self->contours[pos][index].x = x;
+ self->contours[pos][index].y = y;
 }
 
 NAN_METHOD(Contour::Points) {

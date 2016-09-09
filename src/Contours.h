@@ -12,7 +12,7 @@ public:
   static NAN_METHOD(New);
 
   Contour();
-
+  JSFUNC(SetPoint)
   JSFUNC(Point)
   JSFUNC(Points)
   JSFUNC(Size)
